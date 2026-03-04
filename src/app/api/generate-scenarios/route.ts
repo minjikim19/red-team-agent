@@ -81,11 +81,11 @@ const RawScenarioSchema = z.object({
   riskScore: z.preprocess(
     (v) => {
       if (v === undefined || v === null) return undefined;
-      if (typeof v === "number") return v;
-      if (typeof v === "string") { const n = parseFloat(v); return isNaN(n) ? undefined : n; }
+      if (typeof v === "number") return Math.round(v);
+      if (typeof v === "string") { const n = parseFloat(v); return isNaN(n) ? undefined : Math.round(n); }
       return undefined;
     },
-    z.number().min(1).max(9).optional()
+    z.number().int().min(1).max(9).optional()
   ),
 });
 
@@ -524,29 +524,6 @@ function parseRiskSurface(raw: string): RiskSurface {
 // Utility helpers
 // ─────────────────────────────────────────────────────────────
 
-const VALID_OWNER_ROLES = new Set<string>(OWNER_ROLES);
-
-function toOwnerRole(raw: string | undefined): OwnerRole {
-  if (!raw) return "Unknown";
-  if (VALID_OWNER_ROLES.has(raw)) return raw as OwnerRole;
-  return "Unknown";
-}
-
-function clampConfidence(v: number | undefined): number {
-  if (typeof v !== "number" || isNaN(v)) return 0.5;
-  return Math.min(1, Math.max(0, v));
-}
-
-function toRiskLevel(raw: string | undefined): RiskLevel | undefined {
-  if (raw === "Low" || raw === "Medium" || raw === "High") return raw;
-  return undefined;
-}
-
-function clampRiskScore(v: number | undefined): number | undefined {
-  if (typeof v !== "number" || isNaN(v)) return undefined;
-  return Math.min(9, Math.max(1, Math.round(v)));
-}
-
 function summarizeRiskSurface(surface: RiskSurface): string {
   return [
     `assets=${surface.assets.length}`,
@@ -626,7 +603,7 @@ async function extractRiskSurface(
     model,
     userPrompt,
     parseRiskSurface,
-    "Your previous response was invalid.`nReturn ONLY the corrected JSON object with keys:`nassets, trustBoundaries, entryPoints, controlsPresent, unknowns.`nNo markdown. No extra keys.",
+    "Your previous response was invalid.\nReturn ONLY the corrected JSON object with keys:\nassets, trustBoundaries, entryPoints, controlsPresent, unknowns.\nNo markdown. No extra keys.",
     "Risk surface extraction"
   );
 }
@@ -667,17 +644,6 @@ async function generateScenariosWithSurface(
 // ─────────────────────────────────────────────────────────────
 
 async function runAgentLoop(
-  architecture: string,
-  send: (event: SSEEvent) => Promise<void>
-) {
-  return runAgentLoopV2(architecture, send);
-}
-
-// ─────────────────────────────────────────────────────────────
-// API route handler
-// ─────────────────────────────────────────────────────────────
-
-async function runAgentLoopV2(
   architecture: string,
   send: (event: SSEEvent) => Promise<void>
 ) {
@@ -770,9 +736,7 @@ async function runAgentLoopV2(
       callId: chainId,
       summary: `${s.severity} severity, ${s.attackChain.length} steps`,
     });
-  }
 
-  for (const s of rawScenarios) {
     const playbookId = `playbook-${s.id}`;
     await send({
       type: "tool_call",
@@ -801,12 +765,12 @@ async function runAgentLoopV2(
     defensePlaybook: s.playbook,
     assumptions: s.assumptions,
     evidence: s.evidence,
-    confidence: clampConfidence(s.confidence),
+    confidence: s.confidence ?? 0.5,
     controlGaps: s.controlGaps,
-    ownerRole: toOwnerRole(s.ownerRole),
-    likelihood: toRiskLevel(s.likelihood),
-    impact: toRiskLevel(s.impact),
-    riskScore: clampRiskScore(s.riskScore),
+    ownerRole: s.ownerRole as OwnerRole,
+    likelihood: s.likelihood as RiskLevel | undefined,
+    impact: s.impact as RiskLevel | undefined,
+    riskScore: s.riskScore,
   }));
 
   await send({ type: "complete", scenarios });

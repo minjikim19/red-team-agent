@@ -38,3 +38,4 @@ coverage/
 
 # claude code
 .claude/
+CLAUDE.md
