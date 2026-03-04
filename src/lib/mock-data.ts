@@ -1,121 +1,174 @@
-export const MOCK_ARCHITECTURE = `FinVault — Digital Investment & Banking Platform
+import type { ScenarioFromServer } from "@/types";
 
-## Frontend
-- React 18 SPA served via AWS CloudFront CDN
-- Mobile apps: React Native (iOS + Android)
-- WebSocket connections for real-time portfolio updates
+export const MOCK_ARCHITECTURE = `FinVault Digital Investment and Banking Platform
+Frontend:
+- React SPA on CloudFront and React Native mobile apps
+- WebSocket channels for live portfolio and transfer status updates
+Identity:
+- OAuth 2.0 and OIDC with internal IdP, JWT access tokens, refresh tokens in HttpOnly cookies
+- TOTP MFA for retail users and SAML SSO for enterprise customers
+Platform:
+- API Gateway with WAF, Node.js and Python services on ECS Fargate, service mesh with mTLS
+Data:
+- PostgreSQL for customer and transaction records, Redis for sessions, S3 for KYC documents
+Integrations:
+- Plaid for bank linking, Stripe for payments, Twilio for SMS, SendGrid for email, Persona for KYC`;
 
-## Authentication & Identity
-- OAuth 2.0 / OpenID Connect with internal identity provider
-- JWT access tokens (15-min TTL) + refresh tokens (30-day TTL) stored in HttpOnly cookies
-- TOTP-based MFA (Google Authenticator / Authy)
-- Biometric auth on mobile (Face ID / Fingerprint)
-- SSO integration for corporate accounts (SAML 2.0)
-
-## API Layer
-- AWS API Gateway (REST + WebSocket) with WAF rules
-- Rate limiting: 1,000 req/min per authenticated user, 100 req/min unauthenticated
-- Internal service mesh via AWS App Mesh (mTLS between services)
-
-## Backend Microservices (ECS Fargate, Node.js / Python)
-- **user-service**: KYC/AML verification, account management, document uploads (S3)
-- **portfolio-service**: Holdings, performance calculations, tax-loss harvesting
-- **trading-service**: Order routing to Alpaca brokerage API, market data ingestion
-- **payment-service**: ACH transfers (Plaid), wire transfers, Stripe card processing
-- **notification-service**: Email (SendGrid), SMS (Twilio), push notifications
-- **audit-service**: Immutable transaction log (DynamoDB + S3 Glacier archival)
-- **admin-service**: Internal ops dashboard, customer support tools, manual overrides
-
-## Data Layer
-- **PostgreSQL (RDS Multi-AZ)**: User PII, account balances, transaction records
-- **Redis (ElastiCache)**: Session cache, rate-limit counters, real-time price cache
-- **DynamoDB**: Audit logs, notification history
-- **S3**: KYC documents, trade confirmations, tax forms (encrypted at rest)
-
-## Third-Party Integrations
-- Plaid (bank account linking & ACH initiation)
-- Stripe (card processing & fraud scoring)
-- Alpaca (brokerage / trade execution)
-- Twilio (SMS OTP)
-- SendGrid (transactional email)
-- Persona (KYC identity verification)
-
-## Internal Infrastructure
-- VPC with public/private subnets; bastion host for SSH access
-- Jenkins CI/CD pipeline with GitHub webhooks
-- Grafana + Prometheus monitoring; PagerDuty alerting
-- Secrets stored in AWS Secrets Manager
-- Employee access via Okta SSO + hardware MFA (YubiKey)
-
-## Compliance & Regulatory
-- SOC 2 Type II certified
-- PCI DSS Level 1 (card data handled by Stripe, out-of-scope for most systems)
-- FINTRAC (Canadian AML reporting)
-- PIPEDA / provincial privacy law compliance
-- Annual penetration tests by third-party firm`;
-
-export const MOCK_SCENARIOS_FALLBACK = [
+export const DEMO_SCENARIOS: ScenarioFromServer[] = [
   {
-    id: "scn-001",
-    title: "Refresh Token Theft via XSS in Portfolio Notes",
+    id: "demo-001",
+    title: "Session Refresh Token Reuse After Stored XSS in Portfolio Notes",
     attackVector:
-      "Stored XSS in user-generated portfolio annotation field → cookie exfiltration",
-    severity: "Critical" as const,
+      "Stored cross-site scripting in portfolio notes enables replay of privileged actions against active sessions",
+    severity: "Critical",
     description:
-      "The portfolio-service allows users to annotate holdings with rich-text notes. If the frontend fails to sanitize HTML entities before rendering, an attacker can inject a <script> tag that exfiltrates the HttpOnly refresh token via a DNS exfil channel or forged fetch request with credentials. With a 30-day refresh token, the attacker gains persistent account access long after the session appears closed.",
+      "If rich text rendering is not consistently sanitized, an attacker can plant malicious markup in a shared portfolio note. When a privileged user views the note, the browser session can be abused to trigger authenticated API calls that persist access through refresh token rotation gaps.",
     mitreTactic: "Credential Access",
     mitreId: "T1539",
     estimatedImpact:
-      "Full account takeover, unauthorized trades, ACH transfer initiation to attacker-controlled bank account. Average account balance exposure: $45,000.",
-    defensePlaybook: [
-      "Enforce strict Content-Security-Policy: no 'unsafe-inline', restrict script-src to trusted CDN hashes",
-      "Sanitize all user-generated content server-side with DOMPurify before storage and on read",
-      "Rotate refresh tokens on every use (refresh token rotation) and detect reuse as compromise signal",
-      "Bind refresh tokens to device fingerprint (user-agent + IP subnet); invalidate on mismatch",
-      "Implement anomaly detection: flag trades or transfers initiated within 60 seconds of a new device refresh",
-      "Add out-of-band confirmation (SMS/email) for any ACH transfer > $1,000 initiated from a new device",
+      "Customer account takeover, unauthorized fund movement, and a material incident requiring regulator and customer notification.",
+    attackChain: [
+      "Attacker stores malicious markup in a portfolio note shared with support staff",
+      "A privileged browser renders the note and executes the unsafe payload path",
+      "Authenticated session actions are replayed against account and payment endpoints",
+      "Access persists because refresh token rotation and anomaly detection do not trigger"
     ],
+    defensePlaybook: [
+      "Sanitize user-authored HTML on write and render paths",
+      "Enforce a strict CSP and block inline script execution",
+      "Rotate refresh tokens on every use and invalidate on reuse detection",
+      "Require step-up approval for new device payment actions"
+    ],
+    assumptions: [
+      "Portfolio notes are rendered in at least one privileged workflow",
+      "Token reuse telemetry is not currently tied to automated response"
+    ],
+    evidence: [
+      "Architecture includes rich client rendering and long-lived refresh tokens",
+      "Customer support workflows have broad access to account actions"
+    ],
+    confidence: 0.78,
+    controlGaps: [
+      "No explicit content sanitization control is documented",
+      "No mention of refresh token reuse detection"
+    ],
+    ownerRole: "Security",
+    likelihood: "High",
+    impact: "High",
+    riskScore: 9.9,
   },
   {
-    id: "scn-002",
-    title: "Plaid Webhook Replay Attack → Unauthorized Fund Transfers",
+    id: "demo-002",
+    title: "Replay of Plaid Settlement Webhooks Triggers Premature Fund Release",
     attackVector:
-      "HMAC signature bypass on Plaid webhook endpoint in payment-service",
-    severity: "Critical" as const,
+      "Weak webhook verification and replay handling in the payment service allows stale settlement events to be re-accepted",
+    severity: "Critical",
     description:
-      "The payment-service receives Plaid webhooks to confirm ACH transfer statuses. If webhook signature verification uses a timing-vulnerable string comparison (== instead of crypto.timingSafeEqual), an attacker who can observe a single valid webhook can replay it or forge signatures with a timing oracle. A replayed 'TRANSFER_EVENTS_UPDATE' event with status 'settled' could mark a pending transfer as complete, triggering fund release before actual settlement.",
+      "The payment service accepts partner webhooks to move transfers through settlement states. If signature verification is incomplete or replay windows are not enforced, a captured valid event can be reused to release funds before actual settlement completes.",
     mitreTactic: "Defense Evasion",
     mitreId: "T1562",
     estimatedImpact:
-      "Fraudulent fund releases up to configured ACH limits ($25,000/day). Regulatory reporting obligations under FINTRAC for suspicious transactions.",
-    defensePlaybook: [
-      "Replace all HMAC comparisons with crypto.timingSafeEqual() or equivalent constant-time comparison",
-      "Implement idempotency keys: log every processed webhook event ID in Redis with 48h TTL; reject duplicates",
-      "Validate Plaid-Verification-Token on every webhook using Plaid's official verification SDK",
-      "Add webhook replay window: reject any event with timestamp older than 5 minutes",
-      "Monitor for duplicate event_id values across webhook logs; alert on any replay attempt",
-      "Test in staging with Plaid's webhook verification test suite before every payment-service deployment",
+      "Fraudulent fund release, payment reconciliation failures, and escalated operational and compliance review.",
+    attackChain: [
+      "Attacker observes or captures a previously valid webhook request",
+      "The same event is replayed against the webhook endpoint",
+      "The payment service accepts the request due to weak replay controls",
+      "Funds are released before the banking network confirms settlement"
     ],
+    defensePlaybook: [
+      "Use constant-time signature checks and vendor SDK validation",
+      "Reject duplicate event IDs with bounded retention",
+      "Apply strict timestamp windows to all webhook events",
+      "Reconcile settlement against the provider API before release"
+    ],
+    assumptions: [
+      "Webhook state transitions can trigger downstream release logic"
+    ],
+    evidence: [
+      "The architecture depends on Plaid ACH lifecycle events"
+    ],
+    confidence: 0.74,
+    controlGaps: [
+      "No replay cache is documented for webhook IDs"
+    ],
+    ownerRole: "Platform",
+    likelihood: "High",
+    impact: "High",
   },
   {
-    id: "scn-003",
-    title: "IDOR on Admin Service → Bulk Customer Data Exfiltration",
+    id: "demo-003",
+    title: "Support Tool IDOR Exposes Regional KYC Documents",
     attackVector:
-      "Horizontal privilege escalation via predictable customer ID enumeration in admin-service REST API",
-    severity: "High" as const,
+      "Predictable customer resource identifiers allow over-broad support account access to regulated documents",
+    severity: "High",
     description:
-      "The admin-service exposes endpoints like GET /admin/customers/{customerId}/kyc-documents that are protected only by checking if the requester has an 'admin' role — but does not verify that the support agent is assigned to that customer's region or tier. A compromised low-privilege support account (gained via phishing) can enumerate sequential customer IDs and download KYC documents (passports, SIN numbers) for all customers.",
+      "A compromised support account can enumerate customer-specific document endpoints if the admin tool authorizes only on broad role membership. Without region, case, or account ownership checks, a single support compromise can expose a large volume of regulated KYC data.",
     mitreTactic: "Collection",
     mitreId: "T1530",
     estimatedImpact:
-      "Full PII exposure for entire customer base. PIPEDA breach notification required within 72 hours. Class action exposure and potential FINTRAC sanctions.",
-    defensePlaybook: [
-      "Implement attribute-based access control (ABAC): support agents can only access customers in their assigned segment",
-      "Replace sequential integer IDs with non-guessable UUIDs (v4) in all external-facing admin endpoints",
-      "Add rate limiting specifically on admin enumeration endpoints: max 60 customer lookups/hour per agent",
-      "Log and alert on: any agent accessing >20 customer records in a 10-minute window",
-      "Require step-up MFA (YubiKey touch) for accessing sensitive fields: SIN, passport number, bank account",
-      "Implement a data access audit trail reviewable by compliance team; quarterly access reviews",
+      "Large-scale PII disclosure with mandatory breach response and customer trust damage.",
+    attackChain: [
+      "Support credentials are phished or reused from another compromise",
+      "The attacker enumerates predictable customer identifiers",
+      "KYC document endpoints return records without scope validation",
+      "Sensitive identity documents are exfiltrated in bulk"
     ],
+    defensePlaybook: [
+      "Enforce ABAC checks tied to queue, region, and case ownership",
+      "Replace predictable identifiers with opaque external IDs",
+      "Rate limit sensitive record access and alert on bursts",
+      "Require step-up MFA for regulated document access"
+    ],
+    assumptions: [
+      "Support tooling exposes direct object references to customer records"
+    ],
+    evidence: [
+      "The architecture includes internal ops dashboards and KYC document storage"
+    ],
+    confidence: 0.67,
+    controlGaps: [
+      "No resource-scoped authorization model is described"
+    ],
+    ownerRole: "Compliance",
+    likelihood: "Medium",
+    impact: "High",
+  },
+  {
+    id: "demo-004",
+    title: "Model Prompt Leakage From Shared Retrieval Context in AI Advisory Features",
+    attackVector:
+      "Cross-tenant context bleed in AI-assisted portfolio recommendations exposes sensitive prompt context and generated guidance",
+    severity: "High",
+    description:
+      "If retrieval or prompt assembly for AI advisory features reuses cache entries across tenants, customer prompts and recommendation context can leak into another session. The immediate harm is exposure of sensitive investment intent and a governance failure in AI-driven product features.",
+    mitreTactic: "Collection",
+    mitreId: "T1213",
+    estimatedImpact:
+      "Cross-tenant data disclosure, trust erosion in advisory features, and urgent product and legal review.",
+    attackChain: [
+      "A cached retrieval context is incorrectly keyed across tenants",
+      "A second customer request reuses stale prompt context",
+      "The AI output contains another tenant's data or recommendations",
+      "Sensitive customer intent is disclosed to an unrelated user"
+    ],
+    defensePlaybook: [
+      "Scope prompt caches and retrieval stores by tenant and session",
+      "Add redaction and leakage checks before model response delivery",
+      "Log prompt assembly provenance for incident review",
+      "Require human approval for high-impact AI-generated guidance changes"
+    ],
+    assumptions: [
+      "The product includes AI-assisted recommendations with retrieval support"
+    ],
+    evidence: [
+      "The architecture references AI SaaS and customer-specific workflows"
+    ],
+    confidence: 0.58,
+    controlGaps: [
+      "No explicit tenant isolation controls are documented for AI context assembly"
+    ],
+    ownerRole: "Product",
+    likelihood: "Medium",
+    impact: "High",
   },
 ];

@@ -6,74 +6,80 @@ import type { AttackScenario } from "@/types";
 
 const C = {
   // ── Dark header bar only ─────────────────────────────────────────────────────
-  navy:           [10,  20,  40]  as [number, number, number],
-  navyLight:      [16,  30,  58]  as [number, number, number],
-  cyan:           [6,   182, 212] as [number, number, number],
-  cyanDark:       [0,   130, 160] as [number, number, number],
-  headerText:     [255, 255, 255] as [number, number, number],
-  headerMuted:    [148, 168, 198] as [number, number, number],
+  navy: [10, 20, 40] as [number, number, number],
+  navyLight: [16, 30, 58] as [number, number, number],
+  cyan: [6, 182, 212] as [number, number, number],
+  cyanDark: [0, 130, 160] as [number, number, number],
+  headerText: [255, 255, 255] as [number, number, number],
+  headerMuted: [148, 168, 198] as [number, number, number],
 
   // ── Content (light theme) ────────────────────────────────────────────────────
-  white:          [255, 255, 255] as [number, number, number],
-  bodyText:       [20,  20,  20]  as [number, number, number],
-  headingText:    [30,  30,  30]  as [number, number, number],
-  labelText:      [100, 110, 125] as [number, number, number], // uppercase section labels
-  mutedText:      [130, 140, 155] as [number, number, number],
-  border:         [215, 220, 228] as [number, number, number],
-  tableHead:      [232, 236, 241] as [number, number, number],
-  rowAlt:         [248, 249, 251] as [number, number, number],
+  white: [255, 255, 255] as [number, number, number],
+  bodyText: [20, 20, 20] as [number, number, number],
+  headingText: [30, 30, 30] as [number, number, number],
+  labelText: [100, 110, 125] as [number, number, number],
+  mutedText: [130, 140, 155] as [number, number, number],
+  border: [215, 220, 228] as [number, number, number],
+  tableHead: [232, 236, 241] as [number, number, number],
+  rowAlt: [248, 249, 251] as [number, number, number],
 
-  // ── Severity — text (for light backgrounds) ───────────────────────────────────
-  criticalText:   [185, 28,  28]  as [number, number, number], // red-700
-  highText:       [154, 52,  18]  as [number, number, number], // orange-800
-  mediumText:     [133, 77,  14]  as [number, number, number], // amber-800
-  lowText:        [21,  128, 61]  as [number, number, number], // green-700
+  // ── Severity — text (for light backgrounds) ─────────────────────────────────
+  criticalText: [185, 28, 28] as [number, number, number],
+  highText: [154, 52, 18] as [number, number, number],
+  mediumText: [133, 77, 14] as [number, number, number],
+  lowText: [21, 128, 61] as [number, number, number],
 
-  // ── Severity — badges on DARK scenario header bar (solid bg, white text) ──────
-  criticalBadge:  [220, 38,  38]  as [number, number, number], // red-600
-  highBadge:      [234, 88,  12]  as [number, number, number], // orange-600
-  mediumBadge:    [202, 138, 4]   as [number, number, number], // yellow-600
-  lowBadge:       [22,  163, 74]  as [number, number, number], // green-600
+  // ── Severity — badges on dark scenario header bar (solid bg, white text) ─────
+  criticalBadge: [220, 38, 38] as [number, number, number],
+  highBadge: [234, 88, 12] as [number, number, number],
+  mediumBadge: [202, 138, 4] as [number, number, number],
+  lowBadge: [22, 163, 74] as [number, number, number],
 
-  // ── Attack chain (light orange tint) ─────────────────────────────────────────
-  chainBg:        [255, 247, 237] as [number, number, number], // orange-50
-  chainNum:       [154, 52,  18]  as [number, number, number], // orange-800
-  chainBorder:    [253, 186, 116] as [number, number, number], // orange-300
+  // ── Risk progression (light orange tint) ────────────────────────────────────
+  chainBg: [255, 247, 237] as [number, number, number],
+  chainNum: [154, 52, 18] as [number, number, number],
+  chainBorder: [253, 186, 116] as [number, number, number],
 
-  // ── Impact box (light amber tint) ────────────────────────────────────────────
-  impactBg:       [255, 251, 235] as [number, number, number], // amber-50
-  impactText:     [120, 53,  15]  as [number, number, number], // amber-900
-  impactBorder:   [252, 211, 77]  as [number, number, number], // amber-300
+  // ── Impact box (light amber tint) ───────────────────────────────────────────
+  impactBg: [255, 251, 235] as [number, number, number],
+  impactText: [120, 53, 15] as [number, number, number],
+  impactBorder: [252, 211, 77] as [number, number, number],
 
-  // ── Defense playbook (light green tint) ──────────────────────────────────────
-  playbookBg:     [240, 253, 244] as [number, number, number], // green-50
-  playbookNum:    [21,  128, 61]  as [number, number, number], // green-700
-  playbookBorder: [134, 239, 172] as [number, number, number], // green-300
+  // ── Mitigations & monitoring (light green tint) ─────────────────────────────
+  playbookBg: [240, 253, 244] as [number, number, number],
+  playbookNum: [21, 128, 61] as [number, number, number],
+  playbookBorder: [134, 239, 172] as [number, number, number],
 
-  // ── Footer ────────────────────────────────────────────────────────────────────
-  footerBg:       [242, 244, 248] as [number, number, number],
-  footerText:     [120, 130, 145] as [number, number, number],
+  // ── Footer ──────────────────────────────────────────────────────────────────
+  footerBg: [242, 244, 248] as [number, number, number],
+  footerText: [120, 130, 145] as [number, number, number],
 };
 
 // ─── Severity helpers ──────────────────────────────────────────────────────────
 
-/** Severity text color for light backgrounds (tables, inline text). */
 function sevText(sev: string): [number, number, number] {
   switch (sev) {
-    case "Critical": return C.criticalText;
-    case "High":     return C.highText;
-    case "Medium":   return C.mediumText;
-    default:         return C.lowText;
+    case "Critical":
+      return C.criticalText;
+    case "High":
+      return C.highText;
+    case "Medium":
+      return C.mediumText;
+    default:
+      return C.lowText;
   }
 }
 
-/** Severity badge background for the dark scenario header bar. */
 function sevBadgeBg(sev: string): [number, number, number] {
   switch (sev) {
-    case "Critical": return C.criticalBadge;
-    case "High":     return C.highBadge;
-    case "Medium":   return C.mediumBadge;
-    default:         return C.lowBadge;
+    case "Critical":
+      return C.criticalBadge;
+    case "High":
+      return C.highBadge;
+    case "Medium":
+      return C.mediumBadge;
+    default:
+      return C.lowBadge;
   }
 }
 
@@ -84,14 +90,12 @@ function wrapText(doc: jsPDF, text: string, maxWidth: number, fontSize = 9): str
   return doc.splitTextToSize(text, maxWidth);
 }
 
-/** Draw a thin horizontal rule. */
 function rule(doc: jsPDF, y: number, marginL: number, contentW: number) {
   doc.setDrawColor(...C.border);
   doc.setLineWidth(0.25);
   doc.line(marginL, y, marginL + contentW, y);
 }
 
-/** Add page footers after all pages are created. */
 function addFooters(doc: jsPDF, companyName: string) {
   const total = doc.getNumberOfPages();
   const pw = doc.internal.pageSize.getWidth();
@@ -103,7 +107,6 @@ function addFooters(doc: jsPDF, companyName: string) {
     doc.setFillColor(...C.footerBg);
     doc.rect(0, ph - 10, pw, 10, "F");
 
-    // top border of footer
     doc.setDrawColor(...C.border);
     doc.setLineWidth(0.3);
     doc.line(0, ph - 10, pw, ph - 10);
@@ -111,47 +114,137 @@ function addFooters(doc: jsPDF, companyName: string) {
     doc.setFontSize(7);
     doc.setFont("helvetica", "normal");
     doc.setTextColor(...C.footerText);
-    doc.text("CONFIDENTIAL — FOR INTERNAL USE ONLY", 14, ph - 3.5);
-    doc.text(`${companyName} Red Team Report`, pw / 2, ph - 3.5, { align: "center" });
+    doc.text("CONFIDENTIAL | FOR INTERNAL USE ONLY", 14, ph - 3.5);
+    doc.text(`${companyName} Governance Report`, pw / 2, ph - 3.5, { align: "center" });
     doc.text(`Page ${i} of ${total}`, pw - 14, ph - 3.5, { align: "right" });
   }
 }
 
-/** Shorthand: reference to lastAutoTable finalY. */
 function finalY(doc: jsPDF): number {
   return (doc as jsPDF & { lastAutoTable: { finalY: number } }).lastAutoTable.finalY;
 }
 
-/** Add a new blank page and reset curY. */
 function newPage(doc: jsPDF): number {
   doc.addPage();
   return 16;
+}
+
+function truncateText(text: string | undefined, max = 120): string {
+  const value = (text ?? "").trim();
+  if (!value) return "-";
+  return value.length <= max ? value : `${value.slice(0, max - 3).trimEnd()}...`;
+}
+
+function formatDecisionDate(at?: string): string {
+  if (!at) return "-";
+  const parsed = new Date(at);
+  if (Number.isNaN(parsed.getTime())) return "-";
+  return parsed.toLocaleString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+function decisionPriority(decision: AttackScenario["decision"]): number {
+  switch (decision) {
+    case "validate_test":
+      return 0;
+    case "mitigate_now":
+      return 1;
+    case "defer":
+      return 2;
+    case "accept_risk":
+      return 3;
+    case "rejected":
+      return 4;
+    case "pending":
+    default:
+      return 5;
+  }
 }
 
 // ─── Main export ───────────────────────────────────────────────────────────────
 
 export function exportPDF(scenarios: AttackScenario[], companyName = "FinVault Security") {
   const doc = new jsPDF({ unit: "mm", format: "a4", orientation: "portrait" });
-  const pw = doc.internal.pageSize.getWidth();  // 210
+  const pw = doc.internal.pageSize.getWidth(); // 210
   const ph = doc.internal.pageSize.getHeight(); // 297
   const marginL = 14;
   const marginR = 14;
-  const contentW = pw - marginL - marginR;      // 182
+  const contentW = pw - marginL - marginR; // 182
 
   const now = new Date();
   const dateStr = now.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
-  const approvedScenarios = scenarios.filter((s) => s.status === "approved");
 
-  // ── Cover header (dark navy — the only dark section) ─────────────────────────
+  const queuedScenarios = scenarios.filter((s) => s.decision === "validate_test");
+
+  const DECISIONS = [
+    "pending",
+    "validate_test",
+    "mitigate_now",
+    "defer",
+    "accept_risk",
+    "rejected",
+  ] as const satisfies readonly AttackScenario["decision"][];
+
+  const DECISION_LABELS: Record<(typeof DECISIONS)[number], string> = {
+    pending: "Pending",
+    validate_test: "Decision Queue",
+    mitigate_now: "Mitigate Now",
+    defer: "Defer",
+    accept_risk: "Accept Risk",
+    rejected: "Rejected",
+  };
+
+  const decisionCounts: Record<(typeof DECISIONS)[number], number> = {
+    pending: 0,
+    validate_test: 0,
+    mitigate_now: 0,
+    defer: 0,
+    accept_risk: 0,
+    rejected: 0,
+  };
+
+  const ownerCounts: Record<AttackScenario["ownerRole"], number> = {
+    Security: 0,
+    Platform: 0,
+    Compliance: 0,
+    Product: 0,
+    Data: 0,
+    Unknown: 0,
+  };
+
+  for (const s of scenarios) {
+    decisionCounts[s.decision] = (decisionCounts[s.decision] ?? 0) + 1;
+    ownerCounts[(s.ownerRole ?? "Unknown") as AttackScenario["ownerRole"]] += 1;
+  }
+
+  const decisionOrderedScenarios = scenarios.slice().sort((a, b) => {
+    const priorityDelta = decisionPriority(a.decision) - decisionPriority(b.decision);
+    if (priorityDelta !== 0) return priorityDelta;
+    return a.title.localeCompare(b.title);
+  });
+
+  const lowConfidenceScenarios = scenarios.filter((s) => (s.confidence ?? 0.5) < 0.55);
+  const confidenceFocusScenarios =
+    lowConfidenceScenarios.length > 0
+      ? lowConfidenceScenarios
+      : scenarios
+          .slice()
+          .sort((a, b) => (a.confidence ?? 0.5) - (b.confidence ?? 0.5))
+          .slice(0, 3);
+
+  // ── Cover header (dark navy, the only dark section) ──────────────────────────
 
   doc.setFillColor(...C.navy);
   doc.rect(0, 0, pw, 56, "F");
 
-  // Cyan accent stripe
   doc.setFillColor(...C.cyan);
   doc.rect(0, 56, pw, 1.5, "F");
 
-  // Shield icon box
   doc.setFillColor(...C.cyanDark);
   doc.roundedRect(marginL, 10, 12, 12, 2, 2, "F");
   doc.setFont("helvetica", "bold");
@@ -159,28 +252,26 @@ export function exportPDF(scenarios: AttackScenario[], companyName = "FinVault S
   doc.setTextColor(...C.headerText);
   doc.text("S", marginL + 4.2, 19.5);
 
-  // Report title
   doc.setFontSize(20);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(...C.headerText);
-  doc.text("Red Team Assessment Report", marginL + 17, 20);
+  doc.text("Risk Governance Report", marginL + 17, 20);
 
-  // Subtitle
   doc.setFont("helvetica", "normal");
   doc.setFontSize(10);
   doc.setTextColor(...C.headerMuted);
-  doc.text(`${companyName}  ·  Threat Scenario Analysis`, marginL + 17, 27.5);
+  doc.text(`${companyName} | Risk Scenario Review`, marginL + 17, 27.5);
 
-  // Meta line
   doc.setFontSize(8);
   doc.setTextColor(...C.headerMuted);
   doc.text(`Generated: ${dateStr}`, marginL, 43);
   doc.text(
-    `Scenarios: ${scenarios.length}  ·  Approved for Testing: ${approvedScenarios.length}`,
-    pw - marginR, 43, { align: "right" }
+    `Scenarios: ${scenarios.length} | Decision Queue: ${queuedScenarios.length}`,
+    pw - marginR,
+    43,
+    { align: "right" }
   );
 
-  // CONFIDENTIAL badge (on dark header)
   doc.setFillColor(...C.criticalBadge);
   doc.roundedRect(pw - marginR - 38, 47, 38, 6, 1, 1, "F");
   doc.setFontSize(7);
@@ -201,17 +292,17 @@ export function exportPDF(scenarios: AttackScenario[], companyName = "FinVault S
 
   const sevCounts = { Critical: 0, High: 0, Medium: 0, Low: 0 };
   for (const s of scenarios) {
-    if (s.severity in sevCounts) sevCounts[s.severity as keyof typeof sevCounts]++;
+    if (s.severity in sevCounts) sevCounts[s.severity as keyof typeof sevCounts] += 1;
   }
 
   autoTable(doc, {
     startY: curY,
     head: [["Severity", "Count", "Recommended Action"]],
     body: [
-      ["Critical", sevCounts.Critical, sevCounts.Critical > 0 ? "Immediate Action Required" : "—"],
-      ["High",     sevCounts.High,     sevCounts.High > 0     ? "Remediate Within 30 Days"  : "—"],
-      ["Medium",   sevCounts.Medium,   sevCounts.Medium > 0   ? "Remediate Within 90 Days"  : "—"],
-      ["Low",      sevCounts.Low,      sevCounts.Low > 0      ? "Track and Monitor"          : "—"],
+      ["Critical", sevCounts.Critical, sevCounts.Critical > 0 ? "Immediate Action Required" : "-"],
+      ["High", sevCounts.High, sevCounts.High > 0 ? "Remediate Within 30 Days" : "-"],
+      ["Medium", sevCounts.Medium, sevCounts.Medium > 0 ? "Remediate Within 90 Days" : "-"],
+      ["Low", sevCounts.Low, sevCounts.Low > 0 ? "Track and Monitor" : "-"],
     ],
     styles: {
       fillColor: C.white,
@@ -246,36 +337,245 @@ export function exportPDF(scenarios: AttackScenario[], companyName = "FinVault S
     margin: { left: marginL, right: marginR },
   });
 
-  curY = finalY(doc) + 12;
+  curY = finalY(doc) + 10;
 
-  // ── Attack Scenarios heading ──────────────────────────────────────────────────
+  // ── Governance Summary ────────────────────────────────────────────────────────
+
+  if (curY > ph - 95) curY = newPage(doc);
 
   doc.setFontSize(12);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(...C.headingText);
-  doc.text("Attack Scenarios", marginL, curY);
-  curY += 7;
+  doc.text("Governance Summary", marginL, curY);
+  curY += 6;
 
-  // ── Per-scenario sections ─────────────────────────────────────────────────────
+  autoTable(doc, {
+    startY: curY,
+    head: [["Decision", "Count"]],
+    body: [["Total Scenarios", scenarios.length], ...DECISIONS.map((d) => [DECISION_LABELS[d], decisionCounts[d]])],
+    styles: {
+      fillColor: C.white,
+      textColor: C.bodyText,
+      lineColor: C.border,
+      lineWidth: 0.3,
+      fontSize: 8,
+      cellPadding: 2.5,
+      font: "helvetica",
+    },
+    headStyles: {
+      fillColor: C.tableHead,
+      textColor: C.headingText,
+      fontStyle: "bold",
+      fontSize: 8,
+    },
+    alternateRowStyles: { fillColor: C.rowAlt },
+    columnStyles: {
+      0: { cellWidth: contentW - 26 },
+      1: { cellWidth: 26, halign: "center" },
+    },
+    margin: { left: marginL, right: marginR },
+  });
+
+  curY = finalY(doc) + 5;
+
+  if (curY > ph - 65) curY = newPage(doc);
+
+  autoTable(doc, {
+    startY: curY,
+    head: [["Owner Role", "Count"]],
+    body: [
+      ["Security", ownerCounts.Security],
+      ["Platform", ownerCounts.Platform],
+      ["Compliance", ownerCounts.Compliance],
+      ["Product", ownerCounts.Product],
+      ["Data", ownerCounts.Data],
+      ["Unknown", ownerCounts.Unknown],
+    ],
+    styles: {
+      fillColor: C.white,
+      textColor: C.bodyText,
+      lineColor: C.border,
+      lineWidth: 0.3,
+      fontSize: 8,
+      cellPadding: 2.5,
+      font: "helvetica",
+    },
+    headStyles: {
+      fillColor: C.tableHead,
+      textColor: C.headingText,
+      fontStyle: "bold",
+      fontSize: 8,
+    },
+    alternateRowStyles: { fillColor: C.rowAlt },
+    columnStyles: {
+      0: { cellWidth: contentW - 26 },
+      1: { cellWidth: 26, halign: "center" },
+    },
+    margin: { left: marginL, right: marginR },
+  });
+
+  curY = finalY(doc) + 10;
+
+  if (curY > ph - 75) curY = newPage(doc);
+
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(...C.headingText);
+  doc.text("Decisions & Ownership", marginL, curY);
+  curY += 6;
+
+  autoTable(doc, {
+    startY: curY,
+    head: [["Title", "Severity", "Owner", "Decision", "Reason", "Decided", "Latest Change"]],
+    body: decisionOrderedScenarios.map((s) => {
+      const history = s.decisionHistory ?? [];
+      const latestDecision = history[history.length - 1];
+      const latestChange = latestDecision
+        ? `${latestDecision.from}->${latestDecision.to} @${formatDecisionDate(latestDecision.at)}`
+        : "-";
+
+      return [
+        truncateText(s.title, 46),
+        s.severity,
+        s.ownerRole ?? "Unknown",
+        DECISION_LABELS[s.decision],
+        truncateText(s.decisionReason, 120),
+        formatDecisionDate(s.decidedAt),
+        truncateText(latestChange, 48),
+      ];
+    }),
+    styles: {
+      fillColor: C.white,
+      textColor: C.bodyText,
+      lineColor: C.border,
+      lineWidth: 0.25,
+      fontSize: 7,
+      cellPadding: 2,
+      font: "helvetica",
+      overflow: "linebreak",
+    },
+    headStyles: {
+      fillColor: C.navyLight,
+      textColor: C.headerText,
+      fontStyle: "bold",
+      fontSize: 7,
+    },
+    alternateRowStyles: { fillColor: C.rowAlt },
+    columnStyles: {
+      0: { cellWidth: 42 },
+      1: { cellWidth: 16, halign: "center" },
+      2: { cellWidth: 18 },
+      3: { cellWidth: 22 },
+      4: { cellWidth: 42 },
+      5: { cellWidth: 22 },
+      6: { cellWidth: 20 },
+    },
+    didParseCell: (data) => {
+      if (data.section === "body" && data.column.index === 1) {
+        data.cell.styles.textColor = sevText(String(data.cell.raw));
+        data.cell.styles.fontStyle = "bold";
+      }
+    },
+    margin: { left: marginL, right: marginR },
+  });
+
+  curY = finalY(doc) + 10;
+
+  if (curY > ph - 70) curY = newPage(doc);
+
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(...C.headingText);
+  doc.text("Assumptions & Confidence", marginL, curY);
+  curY += 6;
+
+  for (const s of confidenceFocusScenarios) {
+    if (curY > ph - 42) curY = newPage(doc);
+
+    const assumptions = (s.assumptions ?? []).slice(0, 3);
+    const controlGaps = (s.controlGaps ?? []).slice(0, 2);
+    const confidencePct = Math.round((s.confidence ?? 0.5) * 100);
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(8.5);
+    doc.setTextColor(...C.headingText);
+    doc.text(truncateText(s.title, 90), marginL, curY);
+    doc.text(`${confidencePct}%`, pw - marginR, curY, { align: "right" });
+    curY += 4;
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(7);
+    doc.setTextColor(...C.labelText);
+    doc.text("Assumptions", marginL, curY);
+    curY += 3.5;
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    doc.setTextColor(...C.bodyText);
+    const assumptionLines = wrapText(
+      doc,
+      (assumptions.length > 0 ? assumptions : ["No explicit assumptions captured"])
+        .map((item) => `- ${truncateText(item, 110)}`)
+        .join("\n"),
+      contentW,
+      8
+    );
+    doc.text(assumptionLines, marginL, curY);
+    curY += assumptionLines.length * 4 + 2;
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(7);
+    doc.setTextColor(...C.labelText);
+    doc.text("Control Gaps", marginL, curY);
+    curY += 3.5;
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    doc.setTextColor(...C.bodyText);
+    const gapLines = wrapText(
+      doc,
+      (controlGaps.length > 0 ? controlGaps : ["No control gaps captured"])
+        .map((item) => `- ${truncateText(item, 110)}`)
+        .join("\n"),
+      contentW,
+      8
+    );
+    doc.text(gapLines, marginL, curY);
+    curY += gapLines.length * 4 + 5;
+
+    if (curY > ph - 18) {
+      curY = newPage(doc);
+    } else {
+      rule(doc, curY - 2, marginL, contentW);
+    }
+  }
+
+  curY += 6;
+  if (curY > ph - 40) curY = newPage(doc);
+
+  // ── Risk Scenarios ───────────────────────────────────────────────────────────
+
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(...C.headingText);
+  doc.text("Risk Scenarios", marginL, curY);
+  curY += 7;
 
   for (let idx = 0; idx < scenarios.length; idx++) {
     const s = scenarios[idx];
 
     if (curY > ph - 65) curY = newPage(doc);
 
-    // ── Scenario header bar (dark, like a card header) ──────────────────────────
-
+    // Header bar
     const barH = 13;
     doc.setFillColor(...C.navyLight);
     doc.rect(marginL, curY - 3, contentW, barH, "F");
 
-    // Index number
     doc.setFontSize(8);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(...C.headerMuted);
     doc.text(String(idx + 1).padStart(2, "0"), marginL + 2.5, curY + 5.5);
 
-    // Title — truncate if needed
     doc.setFontSize(10);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(...C.headerText);
@@ -283,7 +583,6 @@ export function exportPDF(scenarios: AttackScenario[], companyName = "FinVault S
     const titleLines = doc.splitTextToSize(s.title, maxTitleW);
     doc.text(titleLines[0], marginL + 11, curY + 5.5);
 
-    // Severity badge on dark bar — white text on solid severity color
     const badgeLabel = s.severity.toUpperCase();
     doc.setFontSize(7);
     doc.setFont("helvetica", "bold");
@@ -295,34 +594,32 @@ export function exportPDF(scenarios: AttackScenario[], companyName = "FinVault S
 
     curY += barH;
 
-    // ── Sub-header: MITRE + approval tag (light background) ────────────────────
-
+    // Sub-header: MITRE + decision tag
     doc.setFillColor(...C.rowAlt);
     doc.rect(marginL, curY - 0.5, contentW, 7, "F");
 
-    if (s.status === "approved") {
+    if (s.decision === "validate_test") {
       doc.setFillColor(...C.cyanDark);
-      doc.roundedRect(marginL + 1, curY, 36, 5.2, 0.8, 0.8, "F");
+      doc.roundedRect(marginL + 1, curY, 31, 5.2, 0.8, 0.8, "F");
       doc.setFontSize(7);
       doc.setFont("helvetica", "bold");
       doc.setTextColor(...C.white);
-      doc.text("APPROVED FOR TESTING", marginL + 19, curY + 3.8, { align: "center" });
+      doc.text("DECISION QUEUE", marginL + 16.5, curY + 3.8, { align: "center" });
     }
 
-    const mitreX = s.status === "approved" ? marginL + 40 : marginL + 2;
+    const mitreX = s.decision === "validate_test" ? marginL + 35 : marginL + 2;
     doc.setFontSize(7.5);
     doc.setFont("helvetica", "normal");
     doc.setTextColor(...C.mutedText);
-    doc.text(`MITRE ${s.mitreId}  ·  ${s.mitreTactic}`, mitreX, curY + 4);
+    doc.text(`MITRE ${s.mitreId} | ${s.mitreTactic}`, mitreX, curY + 4);
 
     curY += 9;
 
-    // ── Attack Vector ─────────────────────────────────────────────────────────
-
+    // Scenario Vector
     doc.setFontSize(7.5);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(...C.labelText);
-    doc.text("ATTACK VECTOR", marginL, curY);
+    doc.text("SCENARIO VECTOR", marginL, curY);
     curY += 4.5;
 
     doc.setFont("courier", "normal");
@@ -332,12 +629,11 @@ export function exportPDF(scenarios: AttackScenario[], companyName = "FinVault S
     doc.text(vectorLines, marginL, curY);
     curY += vectorLines.length * 4.5 + 5;
 
-    // ── Attack Description ────────────────────────────────────────────────────
-
+    // Scenario Description
     doc.setFont("helvetica", "bold");
     doc.setFontSize(7.5);
     doc.setTextColor(...C.labelText);
-    doc.text("ATTACK DESCRIPTION", marginL, curY);
+    doc.text("SCENARIO DESCRIPTION", marginL, curY);
     curY += 4.5;
 
     doc.setFont("helvetica", "normal");
@@ -347,15 +643,14 @@ export function exportPDF(scenarios: AttackScenario[], companyName = "FinVault S
     doc.text(descLines, marginL, curY);
     curY += descLines.length * 5 + 5;
 
-    // ── Attack Chain ──────────────────────────────────────────────────────────
-
+    // Risk Progression
     if (s.attackChain && s.attackChain.length > 0) {
       if (curY > ph - 55) curY = newPage(doc);
 
       doc.setFont("helvetica", "bold");
       doc.setFontSize(7.5);
       doc.setTextColor(...C.labelText);
-      doc.text("ATTACK CHAIN", marginL, curY);
+      doc.text("RISK PROGRESSION", marginL, curY);
       curY += 4;
 
       autoTable(doc, {
@@ -380,8 +675,7 @@ export function exportPDF(scenarios: AttackScenario[], companyName = "FinVault S
       curY = finalY(doc) + 5;
     }
 
-    // ── Estimated Impact ──────────────────────────────────────────────────────
-
+    // Estimated Impact
     if (curY > ph - 38) curY = newPage(doc);
 
     doc.setFont("helvetica", "bold");
@@ -398,7 +692,6 @@ export function exportPDF(scenarios: AttackScenario[], companyName = "FinVault S
     doc.setLineWidth(0.4);
     doc.rect(marginL, curY, contentW, impactH, "FD");
 
-    // left accent bar
     doc.setFillColor(...C.impactBorder);
     doc.rect(marginL, curY, 2.5, impactH, "F");
 
@@ -408,19 +701,18 @@ export function exportPDF(scenarios: AttackScenario[], companyName = "FinVault S
     doc.text(impactLines, marginL + 5, curY + 4.5);
     curY += impactH + 5;
 
-    // ── Defense Playbook ──────────────────────────────────────────────────────
-
+    // Mitigations & Monitoring
     if (curY > ph - 55) curY = newPage(doc);
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(7.5);
     doc.setTextColor(...C.labelText);
-    doc.text("DEFENSE PLAYBOOK", marginL, curY);
+    doc.text("MITIGATIONS & MONITORING", marginL, curY);
     curY += 4;
 
     autoTable(doc, {
       startY: curY,
-      body: s.defensePlaybook.map((step, i) => [String(i + 1), step]),
+      body: (s.defensePlaybook ?? []).map((step, i) => [String(i + 1), step]),
       styles: {
         fillColor: C.playbookBg,
         textColor: C.bodyText,
@@ -439,31 +731,27 @@ export function exportPDF(scenarios: AttackScenario[], companyName = "FinVault S
 
     curY = finalY(doc) + 10;
 
-    // Divider between scenarios
     if (idx < scenarios.length - 1) {
-      if (curY > ph - 20) {
-        curY = newPage(doc);
-      } else {
-        rule(doc, curY - 4, marginL, contentW);
-      }
+      if (curY > ph - 20) curY = newPage(doc);
+      else rule(doc, curY - 4, marginL, contentW);
     }
   }
 
-  // ── Test Queue Summary ────────────────────────────────────────────────────────
+  // ── Decision Queue Summary ───────────────────────────────────────────────────
 
-  if (approvedScenarios.length > 0) {
+  if (queuedScenarios.length > 0) {
     if (curY > ph - 60) curY = newPage(doc);
 
     doc.setFontSize(12);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(...C.headingText);
-    doc.text("Test Queue Summary", marginL, curY);
+    doc.text("Decision Queue Summary", marginL, curY);
     curY += 7;
 
     autoTable(doc, {
       startY: curY,
       head: [["#", "Scenario", "Severity", "MITRE ID"]],
-      body: approvedScenarios.map((s, i) => [String(i + 1), s.title, s.severity, s.mitreId]),
+      body: queuedScenarios.map((s, i) => [String(i + 1), s.title, s.severity, s.mitreId]),
       styles: {
         fillColor: C.white,
         textColor: C.bodyText,
@@ -496,10 +784,10 @@ export function exportPDF(scenarios: AttackScenario[], companyName = "FinVault S
     });
   }
 
-  // ── Footers & save ────────────────────────────────────────────────────────────
+  // ── Footers & save ───────────────────────────────────────────────────────────
 
   addFooters(doc, companyName);
 
-  const filename = `redteam-report-${now.toISOString().slice(0, 10)}.pdf`;
+  const filename = `governance-report-${now.toISOString().slice(0, 10)}.pdf`;
   doc.save(filename);
 }

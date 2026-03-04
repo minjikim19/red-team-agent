@@ -11,15 +11,31 @@ interface ChatRequestBody {
 }
 
 function buildSystemPrompt(scenario: Omit<AttackScenario, "status">): string {
+  const confidencePct = Math.round((scenario.confidence ?? 0.5) * 100);
+  const assumptions  = scenario.assumptions  ?? [];
+  const evidence     = scenario.evidence     ?? [];
+  const controlGaps  = scenario.controlGaps  ?? [];
+  const ownerRole    = scenario.ownerRole;
+  const attackChain  = scenario.attackChain ?? [];
+  const defensePlaybook = scenario.defensePlaybook ?? [];
+  const bullets = (items: string[]) =>
+    items.length > 0 ? items.map((s) => `- ${s}`).join("\n") : "- (none provided)";
+
   return `You are a senior penetration tester and red team lead conducting a deep-dive analysis of a specific attack scenario for a fintech application.
 
 You have deep expertise in offensive security, threat modeling, MITRE ATT&CK, and defensive architecture. You are direct, technical, and specific — never generic.
+
+## Safety Guardrail
+
+Do NOT provide exploit steps, payloads, or hacking instructions. Focus on risk, evidence, controls, and monitoring.
 
 ## Scenario Under Analysis
 
 **Title:** ${scenario.title}
 **Severity:** ${scenario.severity}
 **MITRE:** ${scenario.mitreId} — ${scenario.mitreTactic}
+**Confidence:** ${confidencePct}%
+**Owner Role:** ${ownerRole}
 
 **Attack Vector:**
 ${scenario.attackVector}
@@ -28,18 +44,29 @@ ${scenario.attackVector}
 ${scenario.description}
 
 **Attack Chain:**
-${scenario.attackChain.map((step, i) => `${i + 1}. ${step}`).join("\n")}
+${attackChain.length > 0 ? attackChain.map((step, i) => `${i + 1}. ${step}`).join("\n") : "(none provided)"}
 
 **Estimated Business Impact:**
 ${scenario.estimatedImpact}
 
 **Current Defense Playbook:**
-${scenario.defensePlaybook.map((step, i) => `${i + 1}. ${step}`).join("\n")}
+${defensePlaybook.length > 0 ? defensePlaybook.map((step, i) => `${i + 1}. ${step}`).join("\n") : "(none provided)"}
+
+## Governance Context
+
+**Assumptions made during analysis:**
+${bullets(assumptions)}
+
+**Evidence from architecture:**
+${bullets(evidence)}
+
+**Control gaps:**
+${bullets(controlGaps)}
 
 ## Response Guidelines
 
 - Answer ONLY in the context of this specific scenario — never give generic advice
-- Reference exact components from the attack vector and chain when relevant
+- Reference exact components from the attack vector, chain, and evidence when relevant
 - Use bullet points for lists, be concise but thorough
 - When discussing fixes, order by impact-to-effort ratio
 - When discussing detection, name specific log sources, SIEM rules, or monitoring tools
@@ -54,6 +81,13 @@ export async function POST(req: NextRequest) {
 
     if (!message?.trim()) {
       return new Response(JSON.stringify({ error: "Message is required" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    if (!scenario?.title) {
+      return new Response(JSON.stringify({ error: "Scenario is required" }), {
         status: 400,
         headers: { "Content-Type": "application/json" },
       });
@@ -103,9 +137,10 @@ export async function POST(req: NextRequest) {
 
     return new Response(stream.readable, {
       headers: {
-        "Content-Type": "text/event-stream",
+        "Content-Type": "text/event-stream; charset=utf-8",
         "Cache-Control": "no-cache",
         Connection: "keep-alive",
+        "X-Accel-Buffering": "no",
       },
     });
   } catch (err) {

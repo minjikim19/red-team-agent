@@ -22,25 +22,25 @@ type ToolConfig = {
 
 const TOOL_CONFIG: Record<string, ToolConfig> = {
   analyze_attack_surface: {
-    label: "Analyze Attack Surface",
+    label: "Extract Risk Surface",
     Icon: Radar,
     iconColor: "text-blue-400",
     dotColor: "bg-blue-500",
   },
   generate_scenarios: {
-    label: "Generate Scenarios",
+    label: "Generate Risk Register",
     Icon: LayoutList,
     iconColor: "text-violet-400",
     dotColor: "bg-violet-500",
   },
   create_attack_chain: {
-    label: "Build Attack Chain",
+    label: "Model Risk Progression",
     Icon: GitMerge,
     iconColor: "text-orange-400",
     dotColor: "bg-orange-500",
   },
   generate_playbook: {
-    label: "Draft Defense Playbook",
+    label: "Draft Mitigations & Detection Plan",
     Icon: BookOpen,
     iconColor: "text-emerald-400",
     dotColor: "bg-emerald-500",
@@ -49,6 +49,19 @@ const TOOL_CONFIG: Record<string, ToolConfig> = {
 
 interface LoadingScenariosProps {
   agentLog: AgentLogEntry[];
+}
+
+function formatAgentSummary(summary: string): string {
+  const metadataMatch = summary.match(
+    /assets=(\d+),\s*boundaries=(\d+),\s*entryPoints=(\d+),\s*controls=(\d+),\s*unknowns=(\d+)/i
+  );
+
+  if (!metadataMatch) {
+    return summary;
+  }
+
+  const [, assets, boundaries, entryPoints, controls, unknowns] = metadataMatch;
+  return `Assets: ${assets} · Boundaries: ${boundaries} · Entry points: ${entryPoints} · Controls: ${controls} · Unknowns: ${unknowns}`;
 }
 
 export default function LoadingScenarios({ agentLog }: LoadingScenariosProps) {
@@ -84,7 +97,7 @@ export default function LoadingScenarios({ agentLog }: LoadingScenariosProps) {
           {agentLog.length > 0 && (
             <div className="flex-shrink-0 flex items-center gap-2.5">
               <span className="text-xs text-slate-600 font-mono tabular-nums">
-                {doneCount}/{agentLog.length}
+                Step {doneCount} / {agentLog.length}
               </span>
               <div className="flex gap-1">
                 {[0, 1, 2].map((i) => (
@@ -152,7 +165,7 @@ export default function LoadingScenarios({ agentLog }: LoadingScenariosProps) {
                           isRunning ? "text-slate-400" : "text-slate-600"
                         )}
                       >
-                        {entry.summary}
+                        {formatAgentSummary(entry.summary)}
                       </p>
                     </div>
 
